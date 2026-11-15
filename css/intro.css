@@ -1,0 +1,75 @@
+/* 01 인트로 (도입부 초안 이식). 테스트 패널·고스트 텍스트·NEXT SECTION 제거 */
+:root{
+  --white:#FFFFFF; --bg:#FAFAFC;
+  --sky:#9CC8E2; --lavender:#B8B6E5; --pink:#E8B0DD; --peach:#F8CAA7;
+  --text:#1D1D1F; --text-2:#6E6E73; --text-3:#A1A1A8; --line:rgba(0,0,0,.08);
+  --grad:linear-gradient(120deg,#9CC8E2,#B8B6E5 35%,#E8B0DD 68%,#F8CAA7);
+  --ease:cubic-bezier(.22,1,.36,1);
+  --glass:rgba(255,255,255,.55);
+  --font:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic","맑은 고딕","Segoe UI",sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{font-family:var(--font);color:var(--text);background:var(--white);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+svg{display:block}
+:focus-visible{outline:2px solid #8E8AD8;outline-offset:3px;border-radius:8px}
+
+/* ---------- shared (원본 그대로) ---------- */
+.label{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#7C78C9}
+.label::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--grad)}
+.pill{padding:7px 14px;border-radius:999px;background:var(--glass);border:1px solid rgba(255,255,255,.8);box-shadow:0 4px 18px rgba(120,110,180,.12);backdrop-filter:blur(18px) saturate(160%);-webkit-backdrop-filter:blur(18px) saturate(160%)}
+.grad-text{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.orb{position:absolute;border-radius:50%;filter:blur(90px);opacity:.45;pointer-events:none;will-change:transform}
+.orb.a{background:var(--sky)} .orb.b{background:var(--lavender)} .orb.c{background:var(--pink)} .orb.d{background:var(--peach)}
+@keyframes drift{0%{translate:0 0}50%{translate:40px -30px}100%{translate:-30px 25px}}
+.orb{animation:drift 22s ease-in-out infinite alternate}
+.orb.b{animation-duration:27s;animation-delay:-6s}.orb.c{animation-duration:31s;animation-delay:-12s}.orb.d{animation-duration:25s;animation-delay:-3s}
+
+/* ---------- 01 intro ---------- */
+#intro{height:620vh;position:relative}
+.stage{position:sticky;top:0;height:100vh;overflow:hidden}
+#intro .stage{background:#fff}
+#heroBg{position:absolute;inset:0;width:100%;height:100%;z-index:0;display:block;pointer-events:none}
+#intro .stage.has-gl .orb{opacity:.18}
+.intro-title{position:absolute;inset:0;display:grid;place-items:center;text-align:center;z-index:4;will-change:transform,opacity,filter}
+.intro-title h1{font-size:clamp(46px,7.6vw,118px);font-weight:700;letter-spacing:-.045em;line-height:1.02;will-change:transform;transform-style:preserve-3d}
+.intro-title p{margin-top:22px;font-size:clamp(16px,1.5vw,21px);color:var(--text-2);font-weight:500;letter-spacing:-.01em}
+.intro-title p.fade-up{letter-spacing:.01em}
+.ch{display:inline-block;opacity:0;transform:translateY(42%);filter:blur(10px);animation:chIn 1.2s var(--ease) forwards}
+@keyframes chIn{to{opacity:1;transform:none;filter:none}}
+.grad-text.ch{background-size:260% 100%;animation:chIn 1.2s var(--ease) forwards,gradShift 6s ease-in-out infinite alternate}
+@keyframes gradShift{0%{background-position:0% 50%}100%{background-position:100% 50%}}
+.fade-up{opacity:0;animation:fadeUp 1.2s var(--ease) forwards}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+/* 도착 프레임: 원본 사진(DOM)이 셰이더 화면을 그대로 이어받는다 */
+.portal{position:absolute;inset:0;z-index:5;opacity:0;will-change:opacity}
+.portal .scene{position:absolute;inset:0;will-change:transform}
+.world-art{display:block;width:100%;height:100%;object-fit:cover;object-position:center}
+.portal-label{position:absolute;left:0;top:0;z-index:7;text-align:center;pointer-events:none;color:var(--text-2);white-space:nowrap;opacity:0;will-change:transform,opacity}
+.portal-label b{display:block;font-size:15px;font-weight:700;letter-spacing:.02em;color:var(--text)}
+.portal-label small{font-size:12px;opacity:.9}
+#particles{position:absolute;inset:0;width:100%;height:100%;z-index:8;pointer-events:none}
+.veil{position:absolute;inset:0;z-index:9;pointer-events:none;opacity:0;
+  background:radial-gradient(60% 45% at 50% 52%,rgba(255,255,255,.72),rgba(255,255,255,0) 70%),linear-gradient(180deg,rgba(255,255,255,0) 55%,rgba(255,255,255,.9) 92%,#fff)}
+.intro-copy{position:absolute;inset:0;z-index:10;display:grid;place-items:center;text-align:center;padding:0 24px;pointer-events:none}
+.intro-copy > div > *{opacity:0;will-change:transform,opacity,filter}
+.intro-copy h2{margin-top:22px;font-size:clamp(30px,4.3vw,64px);font-weight:700;letter-spacing:-.04em;line-height:1.18}
+.intro-copy p{margin-top:20px;font-size:clamp(15px,1.3vw,19px);color:#5A5A66;font-weight:500}
+.scroll-hint{position:absolute;left:50%;bottom:34px;transform:translateX(-50%);z-index:11;display:flex;flex-direction:column;align-items:center;gap:8px;font-size:11px;font-weight:600;letter-spacing:.16em;color:var(--text-3)}
+.mouse{width:24px;height:38px;border:1.5px solid #B9B9C3;border-radius:14px;position:relative}
+.mouse::after{content:"";position:absolute;left:50%;top:7px;width:3px;height:7px;margin-left:-1.5px;border-radius:2px;background:var(--lavender);animation:wheel 1.8s var(--ease) infinite}
+@keyframes wheel{0%{opacity:0;transform:translateY(-3px)}30%{opacity:1}100%{opacity:0;transform:translateY(10px)}}
+.scroll-hint .chev{animation:bob 2s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(5px)}}
+
+/* ---------- 테스트용 다음 섹션 자리 ---------- */
+
+@media (max-width:900px){
+}
+@media (prefers-reduced-motion:reduce){
+  .orb,.mouse::after,.scroll-hint .chev{animation:none}
+  .ch,.fade-up{animation-duration:.01s}
+  #heroBg{display:none}
+}
+
