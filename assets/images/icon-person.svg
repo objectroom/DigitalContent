@@ -1,4 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
-  <circle cx="32" cy="32" r="30" fill="none" stroke="#FF4D4D" stroke-width="2" stroke-dasharray="5 4"/>
-  <text x="32" y="40" font-family="'Noto Sans KR', sans-serif" font-size="22" font-weight="700" fill="#FF4D4D" text-anchor="middle">P</text>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 26 26" fill="none" stroke="#8E8AD8" stroke-width="1.6"><circle cx="13" cy="9" r="4"/><path d="M5 22c1.2-4.2 4.2-6 8-6s6.8 1.8 8 6" stroke-linecap="round"/></svg>

@@ -1,31 +1,42 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>College Festival 2031 · TEAM0X</title>
 <link rel="icon" href="data:,">
-<link rel="stylesheet" href="css/intro.css">
 <link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/intro.css">
 <script type="importmap">
 { "imports": { "three": "./lib/three.module.js" } }
 </script>
 </head>
-<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <filter id="glassWarp" x="-10%" y="-10%" width="120%" height="120%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.009 0.014" numOctaves="2" seed="7" result="n"/>
+    <feDisplacementMap id="warpMap" in="SourceGraphic" in2="n" scale="0" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+</svg>
 
-<header class="gnb">
-  <a class="logo" id="logo-link" href="#top" aria-label="조별 페이지 상단으로">
-    <img src="assets/images/logo.svg" alt="TEAM0X 로고">
-  </a>
-  <nav aria-label="주요 메뉴">
-    <a href="#world" data-nav="world">WORLD</a>
-    <a href="#projects" data-nav="projects">PROJECTS</a>
+<header class="nav" id="nav">
+  <a class="logo" id="logo-link" href="#top" data-go="intro" aria-label="조별 페이지 상단으로"><img src="assets/images/logo.svg" alt="TEAM0X 로고"></a>
+  <div class="right">
+    <nav aria-label="주요 메뉴"><ul>
+      <li><a href="#world" data-go="world-a" data-sec="world">WORLD</a></li>
+      <li><a href="#projects" data-go="projects" data-sec="projects">PROJECTS</a></li>
+    </ul></nav>
     <a class="home" id="home-link" href="" aria-label="과목 소개 페이지(전체 프로젝트)로 이동">&#8962;</a>
-  </nav>
+  </div>
 </header>
 
-<main id="top">
+<div class="dots" id="dots" aria-label="섹션 이동">
+  <button data-go="intro" aria-label="INTRO"><span>01 INTRO</span></button>
+  <button data-go="world-a" aria-label="WORLD"><span>02 WORLD</span></button>
+  <button data-go="projects" aria-label="PROJECTS"><span>03 PROJECTS</span></button>
+</div>
 
+<main id="top">
+<!-- 01 INTRO (도입부 초안 채택본) -->
 <section id="intro" aria-label="인트로">
   <div class="stage">
     <canvas id="heroBg" aria-hidden="true"></canvas>
@@ -61,87 +72,83 @@
   </div>
 </section>
 
-
-<section class="section" id="world" aria-labelledby="world-title">
-  <p class="section-kicker">02 · WORLD</p>
-  <h2 id="world-title">말하지 않아도 아는 공간</h2>
-  <p class="lead">공간이 나보다 나를 먼저 알아차린다면 우리의 축제는 어떻게 달라질까요?</p>
-
-  <div class="world-grid">
-    <div class="world-copy">
-      <ul class="ch-list">
-        <li>
-          <span class="ch-no">CH.01</span>
-          <h4>AI가 공간으로 들어오다</h4>
-          <p data-missing>CH.01 설명 원고 필요</p>
-        </li>
-        <li>
-          <span class="ch-no">CH.02</span>
-          <h4>공간이 상황을 읽다</h4>
-          <p data-missing>CH.02 설명 원고 필요</p>
-        </li>
-        <li>
-          <span class="ch-no">CH.03</span>
-          <h4>나를 이해하는 AI</h4>
-          <p data-missing>CH.03 설명 원고 필요</p>
-        </li>
-        <li>
-          <span class="ch-no">CH.04</span>
-          <h4>함께 만드는 일상</h4>
-          <p>개인과 공간, 운영자가 연결되어 모두에게 조금 더 편안한 하루를 함께 만들어 갑니다.</p>
-        </li>
-      </ul>
-    </div>
-    <div class="world-art">
-      <img src="assets/images/team-chapter-01.webp" alt="" loading="lazy">
-      <div class="pair">
-        <img src="assets/images/team-chapter-02.webp" alt="" loading="lazy">
-        <img src="assets/images/team-environment-01.webp" alt="" loading="lazy">
+<!-- 02 WORLD A -->
+<section id="world-a" aria-label="세계관">
+  <div class="stage">
+    <div class="orb b" style="width:420px;height:420px;left:-160px;top:20%;opacity:.25"></div>
+    <div class="orb a" style="width:380px;height:380px;right:-120px;bottom:-60px;opacity:.25"></div>
+    <div class="wa-grid">
+      <div class="wa-left">
+        <span class="label pill reveal">02 · WORLD</span>
+        <h2 class="h-main reveal">AI와 함께하는 일상은<br>어떻게 달라졌을까요?</h2>
+        <ol class="chapters" id="chapters"></ol>
+      </div>
+      <div class="stack-wrap reveal">
+        <div class="stack" id="stack"></div>
+        <div class="vbar"><i id="wvbar"></i></div>
+        <div class="counter" id="counter"><b>01</b> / 04</div>
       </div>
     </div>
   </div>
-
-  <div class="msg">
-    <div class="card" style="grid-column: 1 / -1">
-      <h4>핵심 메시지</h4>
-      <p>AI는 모든 것을 대신 결정하지 않습니다. 사람과 공간의 상황을 이해하고, 더 나은 선택을 돕습니다.</p>
-    </div>
-    <div class="card">
-      <h4>개인</h4>
-      <p>자신의 경험을 이어가고</p>
-    </div>
-    <div class="card">
-      <h4>공간</h4>
-      <p>변화에 반응하며</p>
-    </div>
-    <div class="card">
-      <h4>운영자</h4>
-      <p>더 넓은 상황을 살필 수 있습니다</p>
-    </div>
-  </div>
 </section>
 
-<section class="section section--tint" id="projects" aria-labelledby="projects-title">
-  <p class="section-kicker">03 · PROJECTS</p>
-  <h2 id="projects-title" class="explore-title">2031년의 축제를 직접 탐험해 보세요.</h2>
-  <p class="lead">축제 공간 곳곳에 놓인 MCUAI 제품들이 사람들의 하루를 어떻게 바꾸는지 살펴보세요.</p>
-
-  <div class="map-wrap">
-    <canvas id="map" aria-label="축제 공간 3D 지도. 드래그하여 회전하고, 핀을 클릭하면 제품 페이지로 이동합니다"></canvas>
-  </div>
-
-  <ul class="pins">
-    <li><span class="pin-no">핀 1</span><p data-missing>핀 1 원고 필요 (TEXT-06)</p></li>
-    <li><span class="pin-no">핀 2</span><p data-missing>핀 2 원고 필요 (TEXT-06)</p></li>
-    <li><span class="pin-no">핀 3</span><p data-missing>핀 3 원고 필요 (TEXT-06)</p></li>
-  </ul>
+<!-- 02 WORLD C -->
+<section id="world-c" aria-label="세계관 마무리">
+  <div class="stage"><div class="wc-grid">
+    <div class="wc-img"><div class="full-scene" id="wcScene"></div><span class="tag pill">축제 공간과 방문객 — 오후 7시</span></div>
+    <div class="wc-right">
+      <span class="label" id="wc0">02 · WORLD — EPILOGUE</span>
+      <h2 class="h-main" id="wc1">AI는 모든 것을<br>대신 결정하지 않습니다.</h2>
+      <p class="body" id="wc2">사람과 공간의 상황을 이해하고, 더 나은 선택을 돕습니다.</p>
+      <ul class="who">
+        <li id="wc3"><span class="ic"><svg width="26" height="26" viewBox="0 0 26 26" fill="none" stroke="#8E8AD8" stroke-width="1.6"><circle cx="13" cy="9" r="4"/><path d="M5 22c1.2-4.2 4.2-6 8-6s6.8 1.8 8 6" stroke-linecap="round"/></svg></span><div><b>개인</b><span>자신의 경험을 이어가고</span></div></li>
+        <li id="wc4"><span class="ic"><svg width="26" height="26" viewBox="0 0 26 26" fill="none" stroke="#7FAFD0" stroke-width="1.6"><path d="M4 21V11l9-6 9 6v10" stroke-linejoin="round"/><path d="M10 21v-6h6v6"/></svg></span><div><b>공간</b><span>변화에 반응하며</span></div></li>
+        <li id="wc5"><span class="ic"><svg width="26" height="26" viewBox="0 0 26 26" fill="none" stroke="#D08FC6" stroke-width="1.6"><circle cx="13" cy="13" r="8"/><circle cx="13" cy="13" r="3"/><path d="M13 2v4M13 20v4M2 13h4M20 13h4" stroke-linecap="round"/></svg></span><div><b>운영자</b><span>더 넓은 상황을 살필 수 있습니다</span></div></li>
+      </ul>
+      <div class="to-system" id="wc6">
+        <div class="row"><span>NEXT</span><button data-go="projects">PROJECTS <span aria-hidden="true">→</span></button></div>
+        <div class="hbar"><i id="wcbar"></i></div>
+      </div>
+    </div>
+  </div></div>
 </section>
 
+<!-- 03 PROJECTS -->
+<section id="projects" aria-label="프로젝트">
+  <div class="orb b" style="width:520px;height:520px;right:-160px;top:-200px;opacity:.28"></div>
+  <div class="orb d" style="width:420px;height:420px;left:-140px;bottom:-200px;opacity:.25"></div>
+  <div class="pj-head">
+    <span class="label pill reveal">03 · PROJECTS</span>
+    <h2 class="reveal">EXPLORE<br>THE FESTIVAL</h2>
+    <p class="reveal">2031년의 축제를 직접 탐험해 보세요.</p>
+    <p class="body reveal">축제 공간 곳곳에 놓인 MCUAI 제품들이<br>사람들의 하루를 어떻게 바꾸는지 살펴보세요.</p>
+  </div>
+  <div class="map-stage" id="mapStage" aria-label="3D 축제 지도. 드래그해 회전할 수 있습니다.">
+    <canvas id="map" aria-hidden="true"></canvas>
+    <div class="map-pins pre" id="mapPins"></div>
+  </div>
+  <div class="map-ctrl" role="group" aria-label="지도 컨트롤">
+    <button id="zIn" aria-label="확대">+</button>
+    <button id="zOut" aria-label="축소">−</button>
+    <button id="zReset" aria-label="초기화"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2.5 8a5.5 5.5 0 1 0 1.7-4" stroke-linecap="round"/><path d="M2 1.5v3.3h3.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  </div>
+  <div class="map-hint">드래그로 회전 · ⌘/Ctrl + 스크롤로 확대</div>
+  <article class="pcard" id="pcard" aria-live="polite">
+    <button class="x" id="pcardX" aria-label="닫기">✕</button>
+    <div class="vis" id="pcVis"></div>
+    <div class="meta">
+      <small id="pcLabel">PROJECT 01</small>
+      <h3 id="pcName"></h3>
+      <p id="pcOne"></p>
+      <a class="btn dark" id="pcGo" href="#" hidden>EXPLORE PROJECT <span class="arr">→</span></a>
+    </div>
+  </article>
+</section>
 </main>
-
-<footer class="footer">TEAM0X · College Festival 2031</footer>
+<footer class="site">© 2031 College Festival · A Softer Connection with Technology</footer>
 
 <script src="js/intro.js"></script>
+<script src="js/site.js"></script>
 <script type="module" src="js/main.js"></script>
 <script type="module" src="js/map.js"></script>
 </body>

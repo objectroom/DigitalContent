@@ -488,7 +488,7 @@ addEventListener('scroll',()=>{const d=scrollY-lastSY;if(Math.abs(d)>.5)dir=d>0?
 addEventListener('keydown',e=>{
   if(e.target.closest('input,textarea'))return;
   const down=['ArrowDown','PageDown',' '].includes(e.key),up=['ArrowUp','PageUp'].includes(e.key); if(!down&&!up)return;
-  const pts=snapPoints(); if(scrollY>pts[pts.length-1].y+4&&down)return;
+  const pts=snapPoints(),end=pts[pts.length-1].y; if(scrollY>end+4||(down&&scrollY>=end-4))return;   // 인트로 밖은 js/site.js
   const t=down?pts.find(p=>p.y>scrollY+4):[...pts].reverse().find(p=>p.y<scrollY-4); if(!t)return;
   e.preventDefault(); stopPlay(); smoothTo(t.y);
 });
