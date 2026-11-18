@@ -20,7 +20,7 @@ const products = PRODUCT_DIRS.map((dir, i) => ({ n: i + 1, dir, name: MISSING, o
 products.forEach((p) => {
   fetch(`${p.dir}/assets/content/product.json`)
     .then((r) => (r.ok ? r.json() : Promise.reject()))
-    .then((j) => { const t = j['TEXT-01'] || {}; p.name = t['제품명'] || MISSING; p.one = t['한 문장'] || MISSING; })
+    .then((j) => { const t = j['TEXT-01'] || {}; p.name = t['PATH GUARD'] || t.name || MISSING; p.one = t['필요한 순간, 길을 열다'] || t.tagline || MISSING; })
     .catch(() => {})
     .finally(() => { const el = pinEls[p.n - 1]; if (el) { el.querySelector('.tip').textContent = p.name === MISSING ? `PROJECT 0${p.n}` : p.name; el.setAttribute('aria-label', `${p.n}번 ${p.name === MISSING ? '' : p.name}`.trim()); } });
 });
