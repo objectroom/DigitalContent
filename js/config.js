@@ -4,7 +4,7 @@
    PRODUCT_LINKS: 지도 핀 1~3이 연결할 제품 페이지 주소. 제품 페이지 완성 후 입력. 예: "./PRODUCT01/index.html"
              비워 두면 핀 클릭이 동작하지 않습니다. */
 export const HOME_URL = "";
-export const PRODUCT_LINKS = ["", "", ""];
+export const PRODUCT_LINKS = ["", "", "./PRODUCT03/index.html"];
 /* PRODUCT_DIRS: 핀 1~3에 대응하는 제품 폴더. 핀 호버 카드가 이 폴더의
    assets/images/product-hero.webp 와 assets/content/product.json (제품명·한 문장)을 읽어 옵니다.
    폴더 이름을 바꾸지 않았다면 수정할 필요가 없습니다. */
