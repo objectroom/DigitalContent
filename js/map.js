@@ -184,8 +184,8 @@ document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && shown) c
 let hideT = 0;
 pinEls.forEach((p) => {
   const n = +p.dataset.n;
-  p.addEventListener('pointerenter', (e) => { if (e.pointerType === 'touch') return; clearTimeout(hideT); if (!map.sel || map.sel === n) openCard(n, false); });
-  p.addEventListener('pointerleave', (e) => { if (e.pointerType === 'touch' || map.sel) return; hideT = setTimeout(() => { if (!map.sel) closeCard(); }, 240); });
+  p.addEventListener('pointerenter', (e) => { if (e.pointerType === 'touch') return; if (pjTourActive) { setHL(n); return; } clearTimeout(hideT); if (!map.sel || map.sel === n) openCard(n, false); });
+  p.addEventListener('pointerleave', (e) => { if (e.pointerType === 'touch' || map.sel) return; if (pjTourActive) { setHL(TOUR[pj.stop] || 0); return; } hideT = setTimeout(() => { if (!map.sel) closeCard(); }, 240); });
   p.addEventListener('click', (e) => {
     e.stopPropagation();
     const url = PRODUCT_LINKS[n - 1];
@@ -223,17 +223,84 @@ $('#zReset').onclick = () => { map.rot = -38; map.tilt = 56; map.zoom = 1; map.t
 let entered = false, visible = false;
 new IntersectionObserver((es) => es.forEach((e) => {
   visible = e.isIntersecting;
-  if (e.isIntersecting && e.intersectionRatio >= .4 && !entered) {
+  if (e.isIntersecting && !entered) {
     entered = true;
     if (!reduce) { map.cur.rot = -150; map.cur.tilt = 80; map.cur.zoom = .45; }
     pinLayer.classList.remove('pre'); pinLayer.classList.add('enter');
     lastMapInt = performance.now();
   }
-}), { threshold: [0, .4] }).observe($('#projects'));
+}), { threshold: .02 }).observe($('#projects'));
+
+
+/* ======================= PROJECTS v4 · 핀 번호 착지 → 가이드 투어 → 자유 탐색 =======================
+   작업본(College Festival 2031 작업본)의 연출과 수치를 그대로 옮겼다. 구슬 대신 핀 번호 1·2·3이 각 핀 자리로 내려앉고,
+   투어는 핀 1 → 2 → 3 순서로 카메라가 제품을 비춘다. 투어가 끝나면 제목·지도 버튼이 나타나고 직접 조작할 수 있다. */
+const lerp = (a, b, t) => a + (b - a) * t;
+const eIn = (t) => t * t * t, eIO = (t) => (t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+const range = (p, a, b) => clamp((p - a) / (b - a));
+const pj = { el: $('#projects'), p: 0, t: 0, stop: -2 };
+const pjSticky = $('.pj-sticky'), pjHead = $('.pj-head'), pjOrbs = [...document.querySelectorAll('.pj-orb')];
+const pjTour = $('#pjTour'), ptK = $('#ptK'), ptN = $('#ptN'), ptO = $('#ptO'), ptGo = $('#ptGo');
+const TOUR = [1, 2, 3];
+const PJ_T0 = .17, PJ_T1 = .91, PJ_TW = (PJ_T1 - PJ_T0) / TOUR.length;
+const BASE = { rot: -38, tilt: 56 };
+let pjTourActive = false;
+function pinCenter(i) { const el = pinEls[i]; if (el && !el.hidden) { const r = el.querySelector('.head').getBoundingClientRect(); if (r.width) return [r.left + r.width / 2, r.top + r.height / 2]; } return [innerWidth * .57, innerHeight * .57]; }
+function renderProjects(p) {
+  const VW = innerWidth, VH = innerHeight;
+  // 핀 번호 3개가 각 핀 자리로 내려앉는다
+  const land = eIO(range(p, .05, .14)), gone = range(p, .13, .16);
+  if (p < .17) {
+    const box = pjSticky.getBoundingClientRect();
+    pjOrbs.forEach((o, i) => {
+      const gap = Math.min(VW * .26, 260), sx = VW / 2 + (i - 1) * gap, sy = VH * .34;
+      const z = land > 0 ? pinCenter(i) : [sx, sy], x = lerp(sx, z[0], land), y = lerp(sy, z[1] - box.top, land) - Math.sin(land * Math.PI) * 60;
+      o.style.transform = `translate(${x.toFixed(1)}px,${y.toFixed(1)}px) translate(-50%,-50%) scale(${(1 - .78 * land).toFixed(4)})`;
+      o.style.opacity = (1 - gone).toFixed(3);
+      const rp = o.querySelector('.ripple'), rk = range(p, .12, .16);
+      rp.style.transform = `translate(-50%,-50%) scale(${(rk * 4).toFixed(3)})`; rp.style.opacity = (rk > 0 ? (1 - rk) : 0).toFixed(3);
+    });
+  } else pjOrbs.forEach((o) => { o.style.opacity = '0'; });
+  // 투어 정류장
+  const st = p < PJ_T0 ? -1 : p < PJ_T1 ? Math.min(TOUR.length - 1, Math.floor((p - PJ_T0) / PJ_TW)) : 99;
+  if (st !== pj.stop) {
+    pj.stop = st;
+    if (st >= 0 && st < 99) {
+      const n = TOUR[st], pr = products[n - 1], a = anchors[n - 1];
+      if (map.sel || shown) closeCard();
+      if (a) { map.tx = a.x; map.tz = a.z; }
+      map.zoom = VW < 700 ? 1.45 : 1.7; map.rot = BASE.rot + (st - 1) * 12; map.tilt = 52; setHL(n);
+      ptK.textContent = `PROJECT 0${n}`;
+      ptN.textContent = pr.name; ptO.textContent = pr.one;
+      ptN.classList.toggle('is-missing', pr.name === MISSING); ptO.classList.toggle('is-missing', pr.one === MISSING);
+      const url = PRODUCT_LINKS[n - 1]; ptGo.hidden = !url; if (url) ptGo.href = url;
+    } else if (!map.sel) { map.tx = 0; map.tz = 0; map.zoom = 1; map.rot = BASE.rot; map.tilt = BASE.tilt; setHL(0); }
+  }
+  if (st >= 0 && st < 99) {
+    const local = (p - PJ_T0) / PJ_TW - st, ti = eOut(clamp(local / .28)), to = eIn(clamp((local - .84) / .16)), w = (1 - ti) + to;
+    pjTour.style.opacity = (ti * (1 - to)).toFixed(3);
+    pjTour.style.transform = `translateY(${VW < 700 ? 0 : -50}%) translateY(${((1 - ti) * 36 - to * 30).toFixed(1)}px)`;
+    pjTour.style.filter = w > .004 ? `blur(${(w * 10).toFixed(2)}px)` : 'none';
+    pjTour.classList.toggle('live', ti * (1 - to) > .6);
+  } else { pjTour.style.opacity = '0'; pjTour.classList.remove('live'); }
+  pjTourActive = p >= PJ_T0 - .01 && p < PJ_T1;
+  const free = p >= PJ_T1 + .01; pjSticky.classList.toggle('free', free);
+  pjHead.style.opacity = free ? eOut(range(p, PJ_T1, PJ_T1 + .05)).toFixed(3) : '0';
+  pjHead.style.pointerEvents = free ? '' : 'none';
+}
+function pjTick() {
+  const el = pj.el, h = el.offsetHeight - innerHeight;
+  pj.t = clamp((scrollY - el.offsetTop) / h);
+  const near = Math.abs(pj.t - pj.p) > .0004;
+  if (near) { pj.p = reduce ? pj.t : lerp(pj.p, pj.t, .14); renderProjects(pj.p); }
+  else if (pj.p !== pj.t) { pj.p = pj.t; renderProjects(pj.p); }
+}
+renderProjects(0);
 
 function tick(now) {
+  pjTick();
   if (visible) {
-    if (!reduce && entered && !map.sel && !drag && !map.hoverLock && now - lastMapInt > 4500 && !pinEls.some((p) => p.classList.contains('hl'))) map.rot += .035;
+    if (!reduce && entered && !map.sel && !drag && !pjTourActive && pjSticky.classList.contains('free') && now - lastMapInt > 4500 && !pinEls.some((p) => p.classList.contains('hl'))) map.rot += .035;
     const c = map.cur; let moving = false;
     for (const k of ['rot', 'tilt', 'zoom', 'tx', 'tz']) { const d = map[k] - c[k]; if (Math.abs(d) > .0005) { c[k] += d * .12; moving = true; } else c[k] = map[k]; }
     if (moving || map.dirty) { applyCamera(); placePins(); map.dirty = false; }
